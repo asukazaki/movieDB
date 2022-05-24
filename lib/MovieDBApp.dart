@@ -1,9 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'home/Home.dart';
-import 'list/MovieList.dart';
-import 'list/MovieListViewModel.dart';
 
 class MovieDBApp extends StatefulWidget {
   const MovieDBApp({Key? key}) : super(key: key);
@@ -14,54 +12,49 @@ class MovieDBApp extends StatefulWidget {
   }}
 
 class _MovieDBAppState extends State<MovieDBApp> {
-  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final bottomNavigationBar = BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Like'),
-        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
-      ],
-      currentIndex: _currentIndex,
-      fixedColor: Colors.blueAccent,
-      onTap: (int index){
-        setState(() => _currentIndex = index );
-      },
-      type: BottomNavigationBarType.fixed,
-    );
-    if (_currentIndex == 0) {
-      return Home(bottomNavigationBar);
-    } else if (_currentIndex == 1) {
-      return PageWidget(color:Colors.blue, title:'Album', bottomNavigationBar: bottomNavigationBar);
-    } else {
-      return PageWidget(color:Colors.orange, title:'Chat', bottomNavigationBar: bottomNavigationBar);
-    }
-
-    // return Scaffold(
-    //   body: _pageWidgets.elementAt(_currentIndex),
-    //   bottomNavigationBar: BottomNavigationBar(
-    //     items: const <BottomNavigationBarItem>[
-    //       BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-    //       BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Likes'),
-    //       BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
-    //     ],
-    //     currentIndex: _currentIndex,
-    //     fixedColor: Colors.blueAccent,
-    //     onTap: _onItemTapped,
-    //     type: BottomNavigationBarType.fixed,
-    //   ),
-    // );
+    return CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Like'),
+            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+          ],
+        ),
+        tabBuilder: (context, index) {
+          switch (index) {
+            case 0:
+              return CupertinoTabView(builder: (context) {
+                return CupertinoPageScaffold(
+                    child: Home()
+                );
+              });
+            case 1:
+              return CupertinoTabView(builder: (context) {
+                return const CupertinoPageScaffold(
+                    child: PageWidget(color:Colors.blue, title:'Album')
+                );
+              });
+            case 2:
+              return CupertinoTabView(builder: (context) {
+                return const CupertinoPageScaffold(
+                    child: PageWidget(color:Colors.blue, title:'Album')
+                );
+              });
+            default:
+              return const PageWidget(color:Colors.blue, title:'Album');
+          }
+        });
   }
 }
 
 class PageWidget extends StatelessWidget {
   final Color color;
   final String title;
-  final BottomNavigationBar bottomNavigationBar;
 
-  const PageWidget({Key? key, required this.color, required this.title, required this.bottomNavigationBar}) : super(key: key);
+  const PageWidget({Key? key, required this.color, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +75,6 @@ class PageWidget extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: bottomNavigationBar,
     );
   }
 }

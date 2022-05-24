@@ -5,17 +5,13 @@ import '../list/MovieList.dart';
 import '../list/MovieListViewModel.dart';
 
 class Home extends HookConsumerWidget {
-  final BottomNavigationBar bottomNavigationBar;
   final _formKey = GlobalKey<FormState>();
-
   String _message = "";
-
-  Home(this.bottomNavigationBar, {Key? key}) : super(key: key);
 
   void _onTapSearch(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MovieList(bottomNavigationBar)),
+      MaterialPageRoute(builder: (context) => MovieList()),
     );
   }
 
@@ -71,7 +67,6 @@ class Home extends HookConsumerWidget {
           ),
         ),
       ),
-      bottomNavigationBar: bottomNavigationBar,// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

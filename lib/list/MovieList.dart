@@ -11,9 +11,6 @@ import '../api/NetworkError.dart';
 import '../detail/MovieDetail.dart';
 
 class MovieList extends HookConsumerWidget {
-  final BottomNavigationBar bottomNavigationBar;
-
-  MovieList(this.bottomNavigationBar);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -73,7 +70,6 @@ class MovieList extends HookConsumerWidget {
           );
         },
       ),
-      bottomNavigationBar: bottomNavigationBar,
     );
   }
 
