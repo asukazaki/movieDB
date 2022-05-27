@@ -100,6 +100,9 @@ class MovieListViewModel extends ChangeNotifier {
     if (shouldReset) {
       _listItems = [];
     }
+    if (_listItems.isNotEmpty) {
+      currentMovieListIndex ++;
+    }
     state = const LoadingState.loading();
     notifyListeners();
 

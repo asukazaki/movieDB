@@ -33,7 +33,7 @@ class MovieList extends HookConsumerWidget {
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(40),
             child: AppBar(
-              title: Text("${viewModel.totalHits ?? "-"} 件"),
+              title: TextX.textX("${viewModel.totalHits ?? "-"} 件"),
             ),
           ),
           body: HookBuilder(

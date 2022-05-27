@@ -2,6 +2,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:moviedb/MovieDBApp.dart';
 import 'package:moviedb/api/detail/MovieDetailCreditsResponse.dart';
 import 'package:moviedb/api/detail/MovieDetailResponse.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -43,7 +44,7 @@ class MovieDetailSection extends StatelessWidget {
       case DetailSectionIndex.description:
         return _description(response.detail, overview);
       case DetailSectionIndex.info:
-        return Card(child: Text("${index}"),);
+        return _info(response.detail);
       case DetailSectionIndex.credits:
         return _credit(response.credits);
     }
@@ -219,6 +220,20 @@ class MovieDetailSection extends StatelessWidget {
             Expanded(child: Text("${cast.name}", maxLines: 3, overflow: TextOverflow.ellipsis,))
           ],
         ));
+  }
+
+  Widget _info(MovieDetailResponse detail) {
+    return Card(
+      color: Colors.white.withOpacity(0.8),
+      child: Container(
+        padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+        decoration: BoxDecoration(
+          border: Border.all(color: const Color.fromRGBO(211, 211, 211, 1)),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        height: 400,
+      ),
+    );
   }
 }
 

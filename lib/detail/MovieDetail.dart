@@ -19,7 +19,6 @@ class MovieDetail extends HookConsumerWidget {
     final mylistProvider = ref.watch(mylistMovieProvider);
 
     void onTapCredit(int id) async {
-      ref.read(movieListViewModelProvider).currentMovieListIndex ++;
       ref.read(movieListViewModelProvider).fetchPersonMovie(id: id);
       final future = Navigator.push(
         context,
@@ -141,7 +140,7 @@ class MovieDetail extends HookConsumerWidget {
       ),
 
       expandedHeight: 380,
-      backgroundColor: Colors.white60,
+      backgroundColor: Colors.white,
       pinned: true,
       elevation: 2,
       // Text(response.title ?? "-", style: const TextStyle(color: Colors.black87), maxLines: 5,)
