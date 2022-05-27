@@ -59,7 +59,7 @@ class Result {
   String? overview;
   double? popularity;
   String? posterPath;
-  DateTime? releaseDate;
+  String? releaseDate;
   String? title;
   bool? video;
   double? voteAverage;
@@ -75,7 +75,7 @@ class Result {
     overview: json["overview"],
     popularity: json["popularity"].toDouble(),
     posterPath: json["poster_path"],
-    releaseDate: json["release_date"] != null && DateTime.tryParse(json["release_date"]) != null ? DateTime.parse(json["release_date"]) : null,
+    releaseDate: json["release_date"],
     title: json["title"],
     video: json["video"],
     voteAverage: json["vote_average"].toDouble(),
@@ -92,7 +92,7 @@ class Result {
     "overview": overview,
     "popularity": popularity,
     "poster_path": posterPath,
-    "release_date": _dateToJson(releaseDate),
+    "release_date": releaseDate,
     "title": title,
     "video": video,
     "vote_average": voteAverage,

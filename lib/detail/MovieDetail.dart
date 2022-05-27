@@ -15,10 +15,9 @@ class MovieDetail extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(movieDetailViewModelProvider);
 
-    void onTapCredit(String query){
-      ref.watch(movieListViewModelProvider).setSearchWord(query);
+    void onTapCredit(int id){
       ref.read(movieListViewModelProvider).currentMovieListIndex ++;
-      ref.read(movieListViewModelProvider).fetchMovies();
+      ref.read(movieListViewModelProvider).fetchPersonMovie(id: id);
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => MovieList()),
@@ -49,8 +48,8 @@ class MovieDetail extends HookConsumerWidget {
                                 response: response,
                                 overview: viewModel.overview,
                                 size: MediaQuery.of(context).size,
-                                onTapCredits: (query){
-                                  onTapCredit(query);
+                                onTapCredits: (id){
+                                  onTapCredit(id);
                                 },
                             ),
                           childCount: 4,

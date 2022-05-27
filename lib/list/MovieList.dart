@@ -24,52 +24,57 @@ class MovieList extends HookConsumerWidget {
       }
     });
 
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(40),
-        child: AppBar(
-          title: Text("${viewModel.totalHits ?? "-"} 件"),
-        ),
-      ),
-      body: HookBuilder(
-        builder: (context) {
-          final state = viewModel.state;
-          if (state == null) {
-            return Container();
-          }
-          return state.when(
-              data: (MovieListData data) {
-                return data.results.isEmpty
-                    ? const Center(child: Text("検索にヒットしませんでした。"))
-                    : ListView.builder(
-                  itemBuilder: (context, index){
-                    return GestureDetector(
-                      child: _listItem(data.results[index], (text) { }),
-                      onTap: () {
-                        ref.read(movieDetailViewModelProvider).initialize(data.results[index].id, data.results[index].title, data.results[index].overview);
-                        ref.read(movieDetailViewModelProvider).fetch();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MovieDetail()),
-                        );
-                      },
-                    );
-                  },
-                  itemCount: data.results.length,
-                  controller: _scrollController,
-                );
-              },
-              loading: () {
-                return const Center(child: CircularProgressIndicator());
-              },
-              error: (NetworkError error) {
-                return _errorView(error.errorMessage, () { viewModel.fetchMovies(); });
-              },
+    return WillPopScope(
+        child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(40),
+            child: AppBar(
+              title: Text("${viewModel.totalHits ?? "-"} 件"),
+            ),
+          ),
+          body: HookBuilder(
+            builder: (context) {
+              final state = viewModel.state;
+              if (state == null) {
+                return Container();
+              }
+              return state.when(
+                data: (MovieListData data) {
+                  return data.results.isEmpty
+                      ? const Center(child: Text("検索にヒットしませんでした。"))
+                      : ListView.builder(
+                    itemBuilder: (context, index){
+                      return GestureDetector(
+                        child: _listItem(data.results[index], (text) { }),
+                        onTap: () {
+                          ref.read(movieDetailViewModelProvider).initialize(data.results[index].id, data.results[index].title, data.results[index].overview);
+                          ref.read(movieDetailViewModelProvider).fetch();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MovieDetail()),
+                          );
+                        },
+                      );
+                    },
+                    itemCount: data.results.length,
+                    controller: _scrollController,
+                  );
+                },
+                loading: () {
+                  return const Center(child: CircularProgressIndicator());
+                },
+                error: (NetworkError error) {
+                  return _errorView(error.errorMessage, () { viewModel.fetchMovies(); });
+                },
 
-          );
-        },
-      ),
-    );
+              );
+            },
+          ),
+        ),
+        onWillPop: () async {
+            viewModel.resetListItem();
+            return true;
+        });
   }
 
   Widget _listItem(MovieListItem item, void Function(String text) onTap) {
@@ -122,7 +127,7 @@ class MovieList extends HookConsumerWidget {
                         ),
                         const SizedBox(height: 4),
                         Visibility(
-                          child: Text(item.releaseDate != null ? DateFormat('yyyy/MM/dd(E)', "ja_JP").format(item.releaseDate!) : "-",
+                          child: Text(item.releaseDate != null ? item.releaseDate! : "-",
                               style: const TextStyle(
                                   color: Color.fromRGBO(99, 99, 99, 1),
                                   fontSize: 13,

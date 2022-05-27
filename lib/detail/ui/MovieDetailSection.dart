@@ -32,7 +32,7 @@ class MovieDetailSection extends StatelessWidget {
   MovieDetailInfo response;
   String? overview;
   Size size;
-  void Function(String) onTapCredits;
+  void Function(int) onTapCredits;
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +182,9 @@ class MovieDetailSection extends StatelessWidget {
                     return GestureDetector(
                       child: _creditItem(casts[index]),
                       onTap: () {
-                        onTapCredits(casts[index].name?.split(" ")[0] ?? "");
+                        final id = casts[index].id;
+                        if (id == null) { return;}
+                        onTapCredits(id);
                       },
                     );
                   },
