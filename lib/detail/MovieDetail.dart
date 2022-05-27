@@ -15,13 +15,14 @@ class MovieDetail extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(movieDetailViewModelProvider);
 
-    void onTapCredit(int id){
+    void onTapCredit(int id) async {
       ref.read(movieListViewModelProvider).currentMovieListIndex ++;
       ref.read(movieListViewModelProvider).fetchPersonMovie(id: id);
-      Navigator.push(
+      final future = Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => MovieList()),
       );
+      future.then((value) => viewModel.setCurrentIndex());
     }
 
     return Scaffold(
@@ -39,6 +40,7 @@ class MovieDetail extends HookConsumerWidget {
                   slivers: [
                     _sliverAppBar(response.detail, MediaQuery.of(context).size, () {
                       ref.read(movieListViewModelProvider).setCurrentIndexItems();
+                      viewModel.willPop();
                       Navigator.pop(context);
                     }),
                     SliverList(

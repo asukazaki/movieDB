@@ -47,7 +47,8 @@ class MovieList extends HookConsumerWidget {
                       return GestureDetector(
                         child: _listItem(data.results[index], (text) { }),
                         onTap: () {
-                          ref.read(movieDetailViewModelProvider).initialize(data.results[index].id, data.results[index].title, data.results[index].overview);
+                          final result = data.results[index];
+                          ref.read(movieDetailViewModelProvider).initialize(MovieDetailEntry(result.id, result.title, result.overview));
                           ref.read(movieDetailViewModelProvider).fetch();
                           Navigator.push(
                             context,

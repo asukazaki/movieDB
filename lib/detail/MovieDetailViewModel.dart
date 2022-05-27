@@ -11,40 +11,55 @@ import '../api/NetworkError.dart';
 
 final movieDetailViewModelProvider = ChangeNotifierProvider((ref) => MovieDetailViewModel(MovieDetailRepository(), MovieDetailCreditsRepository()));
 
+class MovieDetailEntry {
+  int movieId = 0;
+  String? title;
+  String? overview;
+
+  MovieDetailEntry(this.movieId, this.title, this.overview);
+}
+
 class MovieDetailViewModel extends ChangeNotifier {
   final MovieDetailRepository _movieDetailRepository;
   final MovieDetailCreditsRepository _movieDetailCreditsRepository;
-
-  int _movieId = 0;
-  int get movieId => _movieId;
-  String? _title;
-  String? get title => _title;
-  String? _overview;
-  String? get overview => _overview;
 
   MovieDetailViewModel(this._movieDetailRepository, this._movieDetailCreditsRepository);
 
   LoadingState<MovieDetailInfo>? state;
 
+  int currentMovieIndex = 0;
+  List<MovieDetailEntry> entries = [];
+  List<MovieDetailInfo> detailInfos = [];
+
   MovieDetailResponse? _response;
   MovieDetailResponse? get response => _response;
 
-  void initialize(int movieId, String? title, String? overview) {
-    _movieId = movieId;
-    _title = title;
-    _overview = overview;
+  void initialize(MovieDetailEntry entry) {
+    entries.add(entry);
+  }
+
+  void setCurrentIndex() {
+    state = LoadingState.data(data: detailInfos[currentMovieIndex]);
+    notifyListeners();
+  }
+
+  void willPop() {
+    detailInfos.removeAt(currentMovieIndex);
+    entries.removeAt(currentMovieIndex);
+    if (detailInfos.isNotEmpty) {
+      currentMovieIndex --;
+    }
   }
 
   Future<void> fetch() async {
+    if (detailInfos.isNotEmpty) {
+      currentMovieIndex ++;
+    }
     state = const LoadingState.loading();
     notifyListeners();
 
-    List<Future> futures = [];
-    futures.add(_movieDetailRepository.fetch(movieId));
-    futures.add(_movieDetailCreditsRepository.fetch(movieId));
-
-    final detail = _movieDetailRepository.fetch(movieId);
-    final credits = _movieDetailCreditsRepository.fetch(movieId);
+    final detail = _movieDetailRepository.fetch(entries[currentMovieIndex].movieId);
+    final credits = _movieDetailCreditsRepository.fetch(entries[currentMovieIndex].movieId);
 
     return detail.then((response) {
       response.when(
@@ -52,7 +67,8 @@ class MovieDetailViewModel extends ChangeNotifier {
             credits.then((response) {
               response.when(
                   success: (MovieDetailCreditsResponse credits) {
-                    state = LoadingState.data(data: MovieDetailInfo(detail, credits));
+                    detailInfos.add(MovieDetailInfo(detail, credits));
+                    state = LoadingState.data(data: detailInfos[currentMovieIndex]);
                     notifyListeners();
                   },
                   failure: (NetworkError error) {
@@ -70,6 +86,8 @@ class MovieDetailViewModel extends ChangeNotifier {
           });
     });
   }
+
+  String? get overview => entries[currentMovieIndex].overview;
 }
 
 class MovieDetailInfo {
