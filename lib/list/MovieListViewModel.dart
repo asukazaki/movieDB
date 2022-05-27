@@ -9,16 +9,22 @@ import '../api/search_movie/SearchMovieResponse.dart';
 
 final movieListViewModelProvider = ChangeNotifierProvider((ref) => MovieListViewModel(SearchMovieRepository()));
 
-// final futureProvider = FutureProvider<ApiResult<SearchMovieResponse>>((ref) async {
-//   return MovieListViewModel(SearchMovieRepository()).fetch();
-// });
-
 class MovieListData {
   int page;
-  List<Result> results;
+  List<MovieListItem> results;
   int totalResults;
 
   MovieListData(this.page, this.results, this.totalResults);
+}
+
+class MovieListItem {
+  int id;
+  String? title;
+  String? posterPath;
+  DateTime? releaseDate;
+  String? overview;
+
+  MovieListItem({required this.id, required this.title, required this.posterPath, required this.releaseDate, required this.overview});
 }
 
 class MovieListViewModel extends ChangeNotifier {
@@ -27,83 +33,80 @@ class MovieListViewModel extends ChangeNotifier {
   MovieListViewModel(this._searchMovieRepository);
 
   LoadingState<MovieListData>? state;
-  SearchMovieResponse? _response;
-  int _page = 0;
-  List<Result> results = [];
+
+  List<MovieListData> _listItems = [];
+  int currentMovieListIndex = 0;
+  int? totalHits;
 
   bool isReadMore = false;
 
   String _searchWord = "";
   String get searchWord => _searchWord;
 
-  SearchMovieResponse? get response => _response;
-
-  bool hasApiError = false;
-  String? errorMessage;
-
   void setSearchWord(String searchWord) {
     _searchWord = searchWord;
   }
 
-  Future<void> fetchMovies() async {
-    results = [];
+  void setCurrentIndexItems() {
+    if (currentMovieListIndex != 0) {
+      currentMovieListIndex --;
+    }
+    totalHits = _listItems[currentMovieListIndex].totalResults;
+    state = LoadingState.data(data: _listItems[currentMovieListIndex]);
+    notifyListeners();
+  }
+
+  Future<void> fetchMovies({bool shouldReset = false}) async {
+    if (shouldReset) {
+      _listItems = [];
+    }
     state = const LoadingState.loading();
     notifyListeners();
     return await _searchMovieRepository.fetchMovieList(searchWord)
         .then((response) {
           response.when(
             success: (SearchMovieResponse response) {
-              state = LoadingState.data(data: MovieListData(response.page, response.results, response.totalResults));
-            _response = response;
-            _page = response.page;
-            results += response.results;
+              List<MovieListItem> items = response.results.map((e){
+                return MovieListItem(id: e.id, title: e.title, posterPath: e.posterPath, releaseDate: e.releaseDate, overview: e.overview);
+              }).toList();
+              _listItems.add(MovieListData(response.page, items, response.totalResults));
+              state = LoadingState.data(data: _listItems[currentMovieListIndex]);
+              totalHits = _listItems[currentMovieListIndex].totalResults;
             notifyListeners();
-
-            // hasApiError = false;
-            // errorMessage = null;
           },
             failure: (NetworkError error) {
               state = LoadingState.error(error: error);
               notifyListeners();
-              // hasApiError = true;
-              // errorMessage = error.errorMessage;
           });
         });
-        // .catchError((dynamic error) { errorMessage = error.toString();})
-        // .whenComplete(() => notifyListeners());
   }
 
   Future<void> readMoreMovies() async {
     state = const LoadingState.loading();
     isReadMore = true;
-    return await _searchMovieRepository.fetchMovieList(searchWord, page: _page + 1)
+    return await _searchMovieRepository.fetchMovieList(searchWord, page: _listItems[currentMovieListIndex].page + 1)
         .then((response) {
           response.when(
               success: (SearchMovieResponse response) {
-                state = LoadingState.data(data: MovieListData(response.page, results + response.results, response.totalResults));
-                _response = response;
-                _page = response.page;
-                results += response.results;
-                isReadMore = false;
+                List<MovieListItem> items = response.results.map((e){
+                  return MovieListItem(id: e.id, title: e.title, posterPath: e.posterPath, releaseDate: e.releaseDate, overview: e.overview);
+                }).toList();
 
-                // _response = response;
-                // _page = response.page;
-                // results += response.results;
-                // hasApiError = false;
-                // errorMessage = null;
+                _listItems[currentMovieListIndex].page = response.page;
+                _listItems[currentMovieListIndex].results += items;
+
+                state = LoadingState.data(data: _listItems[currentMovieListIndex]);
+
+                isReadMore = false;
+                notifyListeners();
               },
               failure: (NetworkError error) {
                 state = LoadingState.error(error: error);
                 isReadMore = false;
-                // hasApiError = true;
-                // errorMessage = error.errorMessage;
+                notifyListeners();
               });
-        })
-        .catchError((dynamic error) { errorMessage = error.toString();})
-        .whenComplete(() => notifyListeners());
+        });
+
   }
 
-  // Future<ApiResult<SearchMovieResponse>> fetch() async {
-  //   return _searchMovieRepository.fetchMovieList(searchWord);
-  // }
 }

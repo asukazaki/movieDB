@@ -1,8 +1,7 @@
-import 'dart:ffi';
+
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:moviedb/api/detail/MovieDetailCreditsResponse.dart';
 import 'package:moviedb/api/detail/MovieDetailResponse.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -27,12 +26,13 @@ extension DetailSectionIndexExtension on DetailSectionIndex {
 }
 
 class MovieDetailSection extends StatelessWidget {
-  MovieDetailSection({Key? key, required this.index, required this.response, required this.overview, required this.size}) : super(key: key);
+  MovieDetailSection({Key? key, required this.index, required this.response, required this.overview, required this.size, required this.onTapCredits}) : super(key: key);
 
   int index;
   MovieDetailInfo response;
   String? overview;
   Size size;
+  void Function(String) onTapCredits;
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +182,7 @@ class MovieDetailSection extends StatelessWidget {
                     return GestureDetector(
                       child: _creditItem(casts[index]),
                       onTap: () {
-                        // TODO:
+                        onTapCredits(casts[index].name?.split(" ")[0] ?? "");
                       },
                     );
                   },

@@ -69,7 +69,7 @@ class Home extends HookConsumerWidget {
                           _formKey.currentState!.save();
 
                           ref.watch(movieListViewModelProvider).setSearchWord(_message);
-                          ref.read(movieListViewModelProvider).fetchMovies();
+                          ref.read(movieListViewModelProvider).fetchMovies(shouldReset: true);
                           _onTapSearch(context);
                         }
                       },

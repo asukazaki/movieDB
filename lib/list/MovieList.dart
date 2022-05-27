@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:moviedb/api/search_movie/SearchMovieResponse.dart';
 import 'package:moviedb/detail/MovieDetailViewModel.dart';
 import 'package:moviedb/list/MovieListViewModel.dart';
 
@@ -29,7 +28,7 @@ class MovieList extends HookConsumerWidget {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(40),
         child: AppBar(
-          title: Text("${viewModel.response?.totalResults ?? "-"} 件"),
+          title: Text("${viewModel.totalHits ?? "-"} 件"),
         ),
       ),
       body: HookBuilder(
@@ -73,7 +72,7 @@ class MovieList extends HookConsumerWidget {
     );
   }
 
-  Widget _listItem(Result result, void Function(String text) onTap) {
+  Widget _listItem(MovieListItem item, void Function(String text) onTap) {
     return
       Padding(padding: const EdgeInsets.all(8.0),
         child: Container(
@@ -97,9 +96,9 @@ class MovieList extends HookConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
-                      child: result.posterPath != null
+                      child: item.posterPath != null
                         ? CachedNetworkImage(
-                        imageUrl: 'https://image.tmdb.org/t/p/original/${result.posterPath}',
+                        imageUrl: 'https://image.tmdb.org/t/p/original/${item.posterPath}',
                         placeholder: (context, url) => const CircularProgressIndicator(),
                         errorWidget: (context, url, error) => const Icon(Icons.error),
                         width: 100,
@@ -112,7 +111,7 @@ class MovieList extends HookConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 10),
-                        Text(result.title ?? "-",
+                        Text(item.title ?? "-",
                           style: const TextStyle(
                               color: Colors.black,
                               fontSize: 15,
@@ -123,17 +122,17 @@ class MovieList extends HookConsumerWidget {
                         ),
                         const SizedBox(height: 4),
                         Visibility(
-                          child: Text(result.releaseDate != null ? DateFormat('yyyy/MM/dd(E)', "ja_JP").format(result.releaseDate!) : "-",
+                          child: Text(item.releaseDate != null ? DateFormat('yyyy/MM/dd(E)', "ja_JP").format(item.releaseDate!) : "-",
                               style: const TextStyle(
                                   color: Color.fromRGBO(99, 99, 99, 1),
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold)
                           ),
-                          visible: result.releaseDate != null,
+                          visible: item.releaseDate != null,
                         ),
                         const SizedBox(height: 10),
                         Visibility(
-                          child: Expanded(child: Text(result.overview ?? "-",
+                          child: Expanded(child: Text(item.overview ?? "-",
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 12,
@@ -141,7 +140,7 @@ class MovieList extends HookConsumerWidget {
                             overflow: TextOverflow.ellipsis,
                             maxLines: 3,
                           )),
-                          visible: result.overview != null,
+                          visible: item.overview != null,
                         )
 
                       ],

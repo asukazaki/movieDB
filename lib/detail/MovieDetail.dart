@@ -6,12 +6,24 @@ import 'package:moviedb/api/NetworkError.dart';
 import 'package:moviedb/api/detail/MovieDetailResponse.dart';
 import 'package:moviedb/detail/ui/MovieDetailSection.dart';
 
+import '../list/MovieList.dart';
+import '../list/MovieListViewModel.dart';
 import 'MovieDetailViewModel.dart';
 
 class MovieDetail extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(movieDetailViewModelProvider);
+
+    void onTapCredit(String query){
+      ref.watch(movieListViewModelProvider).setSearchWord(query);
+      ref.read(movieListViewModelProvider).currentMovieListIndex ++;
+      ref.read(movieListViewModelProvider).fetchMovies();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MovieList()),
+      );
+    }
 
     return Scaffold(
       body: HookBuilder(
@@ -27,11 +39,20 @@ class MovieDetail extends HookConsumerWidget {
                   // physics: ClampingScrollPhysics(),
                   slivers: [
                     _sliverAppBar(response.detail, MediaQuery.of(context).size, () {
+                      ref.read(movieListViewModelProvider).setCurrentIndexItems();
                       Navigator.pop(context);
                     }),
                     SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) =>
-                            MovieDetailSection(index: index, response: response, overview: viewModel.overview, size: MediaQuery.of(context).size),
+                            MovieDetailSection(
+                                index: index,
+                                response: response,
+                                overview: viewModel.overview,
+                                size: MediaQuery.of(context).size,
+                                onTapCredits: (query){
+                                  onTapCredit(query);
+                                },
+                            ),
                           childCount: 4,
                         )),
                   ],
@@ -132,11 +153,11 @@ class MovieDetail extends HookConsumerWidget {
             left: 20,
             child: CircleAvatar(
               radius: 60,
-              backgroundImage: CachedNetworkImageProvider(
-                'https://image.tmdb.org/t/p/original/${response.backdropPath}'
+              backgroundImage: response.backdropPath != null
+                  ? CachedNetworkImageProvider('https://image.tmdb.org/t/p/original/${response.backdropPath}')
+                  : const Image(image: AssetImage("images/noImage.png")).image
               ),
             ),
-          ),
         ]),
       ),
     );
