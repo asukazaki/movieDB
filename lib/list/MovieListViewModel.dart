@@ -56,6 +56,9 @@ class MovieListViewModel extends ChangeNotifier {
     if (currentMovieListIndex != 0) {
       currentMovieListIndex --;
     }
+    if (_listItems.isEmpty) {
+      return;
+    }
     totalHits = _listItems[currentMovieListIndex].totalResults;
     state = LoadingState.data(data: _listItems[currentMovieListIndex]);
     notifyListeners();

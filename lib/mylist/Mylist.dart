@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:moviedb/MovieDBApp.dart';
 import 'package:moviedb/db/MylistMovieProvider.dart';
 import 'package:moviedb/detail/MovieDetailViewModel.dart';
+import 'package:moviedb/list/ListItem.dart';
 import 'package:moviedb/list/MovieListViewModel.dart';
 import 'package:moviedb/service/Text+Extension.dart';
 
@@ -35,187 +36,45 @@ class Mylist extends HookConsumerWidget {
           return state.when(
             data: (List<MovieListItem> data) {
               return data.isEmpty
-                  ? Container(child: Center(child: TextX.textX("お気に入り登録すると\n後から気になる映画をチェックできます")),color: backgroundColor)
-                  : ListView.builder(
-
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          child: _listItem(data[index], (text) {}),
-                          onTap: () {
-                            final result = data[index];
-                            ref.read(movieDetailViewModelProvider).initialize(
-                                MovieDetailEntry(
-                                    result.id, result.title, result.overview));
-                            ref.read(movieDetailViewModelProvider).fetch();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MovieDetail()),
-                            );
-                          },
-                        );
-                      },
-                      itemCount: data.length,
-                    );
+                  ? Container(
+                      child: Center(
+                          child: TextX.textX("お気に入り登録すると\n後から気になる映画をチェックできます")),
+                      color: backgroundColor)
+                  : Container(
+                      color: backgroundColor,
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            child: ListItem(item: data[index]),
+                            onTap: () {
+                              final result = data[index];
+                              ref.read(movieDetailViewModelProvider).initialize(
+                                  MovieDetailEntry(result.id, result.title,
+                                      result.overview));
+                              ref.read(movieDetailViewModelProvider).fetch();
+                              ref.read(mylistMovieProvider).existsMylist(result.id);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MovieDetail()),
+                              );
+                            },
+                          );
+                        },
+                        itemCount: data.length,
+                      ));
             },
             loading: () {
               return const Center(child: CircularProgressIndicator());
             },
             error: (NetworkError error) {
-              return _errorView(error.errorMessage, () {  });
+              return Container(
+                  child: Center(child: TextX.textX("エラーです")),
+                  color: backgroundColor);
             },
-
           );
         },
       ),
     );
   }
-
-  Widget _listItem(MovieListItem item, void Function(String text) onTap) {
-    return
-      Padding(padding: const EdgeInsets.all(8.0),
-        child: Container(
-          height: 135,
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          decoration: BoxDecoration(
-              border: Border.all(color: const Color.fromRGBO(211, 211, 211, 1)),
-              borderRadius: BorderRadius.circular(6),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  spreadRadius: 1.0,
-                  blurRadius: 6.0,
-                  offset: Offset(-4, 4),
-                ),
-              ]
-          ),
-          child: Container(
-              color: Colors.white,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Flexible(
-                      child: item.posterPath != null
-                        ? CachedNetworkImage(
-                        imageUrl: 'https://image.tmdb.org/t/p/original/${item.posterPath}',
-                        placeholder: (context, url) => const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) => const Icon(Icons.error),
-                        width: 100,
-                        )
-                        : const Image(image: AssetImage("images/noImage.png")),
-                      flex: 1),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 10),
-                        Text(item.title ?? "-",
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                        const SizedBox(height: 4),
-                        Visibility(
-                          child: Text(item.releaseDate != null ? item.releaseDate! : "-",
-                              style: const TextStyle(
-                                  color: Color.fromRGBO(99, 99, 99, 1),
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold)
-                          ),
-                          visible: item.releaseDate != null,
-                        ),
-                        const SizedBox(height: 10),
-                        Visibility(
-                          child: Expanded(child: Text(item.overview ?? "-",
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 3,
-                          )),
-                          visible: item.overview != null,
-                        )
-
-                      ],
-                    ),
-                    flex: 3,
-                  )
-                ],
-              )
-          ),
-        ),
-      );
-  }
-
-  Widget _errorView(String? message, void Function() onTap) {
-    return Center(child: Column(
-      children: [
-        SizedBox(width: 400,
-        child: ElevatedButton(
-          child: const Text('再試行'),
-          style: ElevatedButton.styleFrom(
-            primary: Colors.lightBlue,
-            onPrimary: Colors.white,
-            shape: const CircleBorder(
-              side: BorderSide(
-                color: Colors.lightBlue,
-                width: 1,
-                style: BorderStyle.solid,
-              ),
-            ),
-          ),
-          onPressed: () {
-            onTap();
-          },
-        )),
-        const SizedBox(height: 20),
-        Text(message ?? ""),
-      ],
-    ));
-  }
-
-  Widget _drawerList() {
-    List<SortType> list = [
-      SortType.defaultSort,
-      SortType.releaseDesc,
-      SortType.releaseAsc,
-      SortType.rate,
-    ];
-
-    return ListView.builder(
-      itemBuilder: (context, index){
-        return ListTile(
-          title: Text(list[index].displayName),
-          onTap: (){
-
-          },
-        );
-      },
-      itemCount: 5,
-    );
-  }
-}
-
-enum SortType {
-  defaultSort,
-  releaseAsc,
-  releaseDesc,
-  rate,
-}
-
-extension SortTypeExtension on SortType {
-  static final displayNames = {
-    SortType.defaultSort: "デフォルト順",
-    SortType.releaseAsc: "公開が古い順",
-    SortType.releaseDesc: "公開が新しい順",
-    SortType.rate: "評価が高い順",
-  };
-
-  String get displayName => displayNames[this]!;
 }
