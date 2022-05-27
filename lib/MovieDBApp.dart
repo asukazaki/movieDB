@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 
 import 'home/Home.dart';
 
+const primaryColor = Color.fromRGBO(244, 134, 96, 1);
+const accentColor = Color.fromRGBO(185, 95, 72, 1);
+const backgroundColor = Color.fromRGBO(62, 69, 82, 1);
+const secondaryColor = Color.fromRGBO(39, 43, 51, 1);
+const textColor = Color.fromRGBO(240, 221, 185, 1);
+
 class MovieDBApp extends StatefulWidget {
   const MovieDBApp({Key? key}) : super(key: key);
 
@@ -17,11 +23,14 @@ class _MovieDBAppState extends State<MovieDBApp> {
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
+          activeColor: Colors.white,
+          inactiveColor: backgroundColor,
           items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Like'),
+            BottomNavigationBarItem(icon: Icon(Icons.home),backgroundColor: secondaryColor, label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.favorite),backgroundColor: secondaryColor, label: 'Like'),
             BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
           ],
+          backgroundColor: secondaryColor,
         ),
         tabBuilder: (context, index) {
           switch (index) {
