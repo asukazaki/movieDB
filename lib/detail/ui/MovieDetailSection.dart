@@ -98,7 +98,7 @@ class MovieDetailSection extends StatelessWidget {
       measureFn: (BudgetChart record, _) => record.money,
       colorFn: (BudgetChart record, _) => record.color,
       data: [
-        BudgetChart("${voteAverage*10}%", voteAverage*10, charts.MaterialPalette.blue.shadeDefault),
+        BudgetChart("${voteAverage*10}%", voteAverage*10, charts.MaterialPalette.green.shadeDefault),
         BudgetChart("", (10-voteAverage)*10, const charts.Color(r: 0, g: 0, b: 0, a: 16)),
       ]
     );
