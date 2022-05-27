@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:moviedb/mylist/Mylist.dart';
 
 import 'home/Home.dart';
 
@@ -27,8 +28,7 @@ class _MovieDBAppState extends State<MovieDBApp> {
           inactiveColor: backgroundColor,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home),backgroundColor: secondaryColor, label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.favorite),backgroundColor: secondaryColor, label: 'Like'),
-            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+            BottomNavigationBarItem(icon: Icon(Icons.favorite),backgroundColor: secondaryColor, label: 'Like')
           ],
           backgroundColor: secondaryColor,
         ),
@@ -42,14 +42,8 @@ class _MovieDBAppState extends State<MovieDBApp> {
               });
             case 1:
               return CupertinoTabView(builder: (context) {
-                return const CupertinoPageScaffold(
-                    child: PageWidget(color:Colors.blue, title:'Album')
-                );
-              });
-            case 2:
-              return CupertinoTabView(builder: (context) {
-                return const CupertinoPageScaffold(
-                    child: PageWidget(color:Colors.blue, title:'Album')
+                return CupertinoPageScaffold(
+                    child: Mylist()
                 );
               });
             default:

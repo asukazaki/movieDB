@@ -7,86 +7,68 @@ import 'package:moviedb/MovieDBApp.dart';
 import 'package:moviedb/db/MylistMovieProvider.dart';
 import 'package:moviedb/detail/MovieDetailViewModel.dart';
 import 'package:moviedb/list/MovieListViewModel.dart';
+import 'package:moviedb/service/Text+Extension.dart';
 
 import '../api/NetworkError.dart';
 import '../detail/MovieDetail.dart';
-import '../service/Text+Extension.dart';
 
-class MovieList extends HookConsumerWidget {
+class Mylist extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(movieListViewModelProvider);
+    // final viewModel = ref.watch(movieListViewModelProvider);
+    final mylistProvider = ref.watch(mylistMovieProvider);
 
-    final _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent * 0.95 &&
-          !viewModel.isReadMore) {
-        viewModel.readMoreMovies();
-      }
-    });
-
-    return WillPopScope(
-        child: Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(40),
-            child: AppBar(
-              title: Text("${viewModel.totalHits ?? "-"} 件"),
-            ),
-          ),
-          body: HookBuilder(
-            builder: (context) {
-              final state = viewModel.state;
-              if (state == null) {
-                return Container();
-              }
-              return state.when(
-                data: (MovieListData data) {
-                  return data.results.isEmpty
-                      ? Container(color: backgroundColor, child: Center(child: TextX.textX("検索にヒットしませんでした。")),)
-                      : Container(
-                      color: backgroundColor,
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            child: _listItem(data.results[index], (text) {}),
-                            onTap: () {
-                              final result = data.results[index];
-                              ref
-                                  .read(movieDetailViewModelProvider)
-                                  .initialize(MovieDetailEntry(result.id,
-                                  result.title, result.overview));
-                              ref.read(movieDetailViewModelProvider).fetch();
-                              ref.read(mylistMovieProvider).existsMylist(data.results[index].id);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MovieDetail()),
-                              );
-                            },
-                          );
-                        },
-                        itemCount: data.results.length,
-                        controller: _scrollController,
-                      )
-                  );
-                },
-                loading: () {
-                  return Container(color: backgroundColor, child: const Center(child: CircularProgressIndicator()));
-                },
-                error: (NetworkError error) {
-                  return _errorView(error.errorMessage, () { viewModel.fetchMovies(); });
-                },
-
-              );
-            },
-          ),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(40),
+        child: AppBar(
+          title: TextX.textX("お気に入り"),
         ),
-        onWillPop: () async {
-            viewModel.resetListItem();
-            return true;
-        });
+      ),
+      body: HookBuilder(
+        builder: (context) {
+          final state = mylistProvider.state;
+          if (state == null) {
+            return Container();
+          }
+          return state.when(
+            data: (List<MovieListItem> data) {
+              return data.isEmpty
+                  ? Container(child: Center(child: TextX.textX("お気に入り登録すると\n後から気になる映画をチェックできます")),color: backgroundColor)
+                  : ListView.builder(
+
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          child: _listItem(data[index], (text) {}),
+                          onTap: () {
+                            final result = data[index];
+                            ref.read(movieDetailViewModelProvider).initialize(
+                                MovieDetailEntry(
+                                    result.id, result.title, result.overview));
+                            ref.read(movieDetailViewModelProvider).fetch();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MovieDetail()),
+                            );
+                          },
+                        );
+                      },
+                      itemCount: data.length,
+                    );
+            },
+            loading: () {
+              return const Center(child: CircularProgressIndicator());
+            },
+            error: (NetworkError error) {
+              return _errorView(error.errorMessage, () {  });
+            },
+
+          );
+        },
+      ),
+    );
   }
 
   Widget _listItem(MovieListItem item, void Function(String text) onTap) {

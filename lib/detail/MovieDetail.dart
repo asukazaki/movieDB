@@ -2,10 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:moviedb/MovieDBApp.dart';
 import 'package:moviedb/api/NetworkError.dart';
 import 'package:moviedb/api/detail/MovieDetailResponse.dart';
 import 'package:moviedb/detail/ui/MovieDetailSection.dart';
 
+import '../db/MylistMovieProvider.dart';
 import '../list/MovieList.dart';
 import '../list/MovieListViewModel.dart';
 import 'MovieDetailViewModel.dart';
@@ -14,6 +16,7 @@ class MovieDetail extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(movieDetailViewModelProvider);
+    final mylistProvider = ref.watch(mylistMovieProvider);
 
     void onTapCredit(int id) async {
       ref.read(movieListViewModelProvider).currentMovieListIndex ++;
@@ -25,10 +28,15 @@ class MovieDetail extends HookConsumerWidget {
       future.then((value) => viewModel.setCurrentIndex());
     }
 
+    void onTapMylist(MovieDetailResponse detail) {
+      mylistProvider.toggleMylist(MovieListItem(id: detail.id!, title: detail.title, posterPath: detail.posterPath, releaseDate: detail.releaseDate, overview: detail.overview));
+    }
+
     return Scaffold(
       body: HookBuilder(
         builder: (context) {
           final state = viewModel.state;
+          final isMylist = mylistProvider.isMylist;
           if (state == null) {
             return Container();
           }
@@ -38,11 +46,19 @@ class MovieDetail extends HookConsumerWidget {
                 return CustomScrollView(
                   // physics: ClampingScrollPhysics(),
                   slivers: [
-                    _sliverAppBar(response.detail, MediaQuery.of(context).size, () {
-                      ref.read(movieListViewModelProvider).setCurrentIndexItems();
-                      viewModel.willPop();
-                      Navigator.pop(context);
-                    }),
+                    _sliverAppBar(
+                        response: response.detail,
+                        isMylist: isMylist,
+                        size: MediaQuery.of(context).size,
+                        onTapBack: () {
+                          ref.read(movieListViewModelProvider).setCurrentIndexItems();
+                          viewModel.willPop();
+                          Navigator.pop(context);
+                        },
+                        onTapMylist: () {
+                          onTapMylist(response.detail);
+                        }
+                    ),
                     SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) =>
                             MovieDetailSection(
@@ -97,13 +113,19 @@ class MovieDetail extends HookConsumerWidget {
     ));
   }
 
-  Widget _sliverAppBar(MovieDetailResponse response, Size size, void Function() onTap) {
+  Widget _sliverAppBar({
+    required MovieDetailResponse response,
+    required bool isMylist,
+    required Size size,
+    required void Function() onTapBack,
+    required void Function() onTapMylist}
+  ) {
     return SliverAppBar(
       leading: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ElevatedButton(
           onPressed: () {
-            onTap();
+            onTapBack();
           },
           style: ElevatedButton.styleFrom(
             primary: Colors.white.withOpacity(0.6),
@@ -117,6 +139,7 @@ class MovieDetail extends HookConsumerWidget {
           ),
         ),
       ),
+
       expandedHeight: 380,
       backgroundColor: Colors.white60,
       pinned: true,
@@ -159,6 +182,28 @@ class MovieDetail extends HookConsumerWidget {
                   : const Image(image: AssetImage("images/noImage.png")).image
               ),
             ),
+          Positioned(
+              top: 295,
+              left: size.width - 60,
+              child: SizedBox(
+                height: 50,
+                width: 50,
+                child: ElevatedButton(
+                  onPressed: () {
+                    onTapMylist();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white.withOpacity(0.6),
+                    shape: const CircleBorder(),
+                    padding: EdgeInsets.zero,
+                  ),
+                  child: Icon(
+                    Icons.favorite,
+                    color: isMylist ? accentColor : Colors.white,
+                    size: 32,
+                  ),
+                ),
+              ))
         ]),
       ),
     );
