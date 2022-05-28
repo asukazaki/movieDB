@@ -53,9 +53,6 @@ class MovieListViewModel extends ChangeNotifier {
   }
 
   void setCurrentIndexItems() {
-    if (currentMovieListIndex != 0) {
-      currentMovieListIndex --;
-    }
     if (_listItems.isEmpty) {
       return;
     }
@@ -66,6 +63,9 @@ class MovieListViewModel extends ChangeNotifier {
 
   void resetListItem() {
     _listItems.removeAt(currentMovieListIndex);
+    if (currentMovieListIndex != 0) {
+      currentMovieListIndex --;
+    }
   }
 
   Future<void> fetchMovies({bool shouldReset = false}) async {
