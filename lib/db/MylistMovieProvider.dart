@@ -53,12 +53,15 @@ class MylistProvider extends ChangeNotifier {
     state = const LoadingState.loading();
     notifyListeners();
     await _mylistRepository.deleteMylist(id);
+    if (_mylists.where((element) => element.id == id).isNotEmpty) {
+      isMylist = false;
+    }
     _mylists = _mylists.where((element) => element.id != id).toList();
     state = LoadingState.data(
         data: _mylists.map((e) => MovieListItem(id: e.id, title: e.title, posterPath: e.posterPath, releaseDate: e.releaseDate, overview: e.overview)).toList()
     );
+    
     notifyListeners();
-
   }
 
   Future<void> existsMylist(int id) async {
