@@ -131,7 +131,7 @@ class MovieListViewModel extends ChangeNotifier {
   }
 
   Future<void> readMoreMovies() async {
-    if (!_isQuerySearch) {
+    if (!_isQuerySearch || _listItems[currentMovieListIndex].results.length >= _listItems[currentMovieListIndex].totalResults) {
       return;
     }
     state = const LoadingState.loading();

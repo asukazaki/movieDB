@@ -81,7 +81,7 @@ class MovieList extends HookConsumerWidget {
                                     },
                                   );
                                 },
-                                itemCount: data.results.length <=
+                                itemCount: data.results.length <
                                         (viewModel.totalHits ?? 0)
                                     ? data.results.length + 1
                                     : data.results.length,
