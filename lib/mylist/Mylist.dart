@@ -43,22 +43,38 @@ class Mylist extends HookConsumerWidget {
                   : Container(
                       color: backgroundColor,
                       child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return GestureDetector(
-                            child: ListItem(item: data[index]),
-                            onTap: () {
-                              final result = data[index];
-                              ref.read(movieDetailViewModelProvider).initialize(
-                                  MovieDetailEntry(result.id, result.title,
-                                      result.overview));
-                              ref.read(movieDetailViewModelProvider).fetch();
-                              ref.read(mylistMovieProvider).existsMylist(result.id);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MovieDetail()),
-                              );
-                            },
+                          return Listener(
+                            child: Dismissible(
+                              child: GestureDetector(
+                                child: ListItem(item: data[index]),
+                                onTap: () {
+                                  final result = data[index];
+                                  ref.read(movieDetailViewModelProvider).initialize(
+                                      MovieDetailEntry(result.id, result.title,
+                                          result.overview));
+                                  ref.read(movieDetailViewModelProvider).fetch();
+                                  ref.read(mylistMovieProvider).existsMylist(result.id);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MovieDetail()),
+                                  );
+                                },
+                              ),
+                              onDismissed: (DismissDirection direction) {
+                                mylistProvider.deleteMylist(data[index].id);
+                              },
+                              key: Key("${data[index].id}"),
+                              direction: DismissDirection.endToStart,
+                              background: Container(
+                                padding: const EdgeInsets.only(right: 10,),
+                                alignment: AlignmentDirectional.centerEnd,
+                                color: primaryColor,
+                                child: Icon(Icons.delete, color: textColor),
+                              ),
+                            ),
                           );
                         },
                         itemCount: data.length,
