@@ -9,27 +9,27 @@ class PersonMovieCreditsResponse {
     if (json['cast'] != null) {
       cast = <Cast>[];
       json['cast'].forEach((v) {
-        cast!.add(new Cast.fromJson(v));
+        cast!.add(Cast.fromJson(v));
       });
     }
     if (json['crew'] != null) {
       crew = <Crew>[];
       json['crew'].forEach((v) {
-        crew!.add(new Crew.fromJson(v));
+        crew!.add(Crew.fromJson(v));
       });
     }
     id = json['id'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.cast != null) {
-      data['cast'] = this.cast!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (cast != null) {
+      data['cast'] = cast!.map((v) => v.toJson()).toList();
     }
-    if (this.crew != null) {
-      data['crew'] = this.crew!.map((v) => v.toJson()).toList();
+    if (crew != null) {
+      data['crew'] = crew!.map((v) => v.toJson()).toList();
     }
-    data['id'] = this.id;
+    data['id'] = id;
     return data;
   }
 }
@@ -93,24 +93,24 @@ class Cast {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['adult'] = this.adult;
-    data['backdrop_path'] = this.backdropPath;
-    data['title'] = this.title;
-    data['genre_ids'] = this.genreIds;
-    data['original_language'] = this.originalLanguage;
-    data['original_title'] = this.originalTitle;
-    data['poster_path'] = this.posterPath;
-    data['video'] = this.video;
-    data['vote_average'] = this.voteAverage;
-    data['overview'] = this.overview;
-    data['release_date'] = this.releaseDate;
-    data['vote_count'] = this.voteCount;
-    data['id'] = this.id;
-    data['popularity'] = this.popularity;
-    data['character'] = this.character;
-    data['credit_id'] = this.creditId;
-    data['order'] = this.order;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['adult'] = adult;
+    data['backdrop_path'] = backdropPath;
+    data['title'] = title;
+    data['genre_ids'] = genreIds;
+    data['original_language'] = originalLanguage;
+    data['original_title'] = originalTitle;
+    data['poster_path'] = posterPath;
+    data['video'] = video;
+    data['vote_average'] = voteAverage;
+    data['overview'] = overview;
+    data['release_date'] = releaseDate;
+    data['vote_count'] = voteCount;
+    data['id'] = id;
+    data['popularity'] = popularity;
+    data['character'] = character;
+    data['credit_id'] = creditId;
+    data['order'] = order;
     return data;
   }
 }
@@ -174,24 +174,24 @@ class Crew {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['adult'] = this.adult;
-    data['backdrop_path'] = this.backdropPath;
-    data['genre_ids'] = this.genreIds;
-    data['id'] = this.id;
-    data['original_language'] = this.originalLanguage;
-    data['original_title'] = this.originalTitle;
-    data['overview'] = this.overview;
-    data['poster_path'] = this.posterPath;
-    data['release_date'] = this.releaseDate;
-    data['title'] = this.title;
-    data['video'] = this.video;
-    data['vote_average'] = this.voteAverage;
-    data['vote_count'] = this.voteCount;
-    data['popularity'] = this.popularity;
-    data['credit_id'] = this.creditId;
-    data['department'] = this.department;
-    data['job'] = this.job;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['adult'] = adult;
+    data['backdrop_path'] = backdropPath;
+    data['genre_ids'] = genreIds;
+    data['id'] = id;
+    data['original_language'] = originalLanguage;
+    data['original_title'] = originalTitle;
+    data['overview'] = overview;
+    data['poster_path'] = posterPath;
+    data['release_date'] = releaseDate;
+    data['title'] = title;
+    data['video'] = video;
+    data['vote_average'] = voteAverage;
+    data['vote_count'] = voteCount;
+    data['popularity'] = popularity;
+    data['credit_id'] = creditId;
+    data['department'] = department;
+    data['job'] = job;
     return data;
   }
 }

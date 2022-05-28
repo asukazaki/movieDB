@@ -146,7 +146,7 @@ class MovieDetail extends HookConsumerWidget {
       // Text(response.title ?? "-", style: const TextStyle(color: Colors.black87), maxLines: 5,)
       flexibleSpace: FlexibleSpaceBar(
         title: Container(
-          padding: EdgeInsets.fromLTRB(90, 30, 8, 8),
+          padding: const EdgeInsets.fromLTRB(90, 30, 8, 8),
           child: Text(response.title ?? "-", style: const TextStyle(color: Colors.black87), maxLines: 5,),
         ),
         titlePadding: const EdgeInsets.all(8),

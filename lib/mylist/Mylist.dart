@@ -1,8 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:moviedb/MovieDBApp.dart';
 import 'package:moviedb/db/MylistMovieProvider.dart';
 import 'package:moviedb/detail/MovieDetailViewModel.dart';
@@ -72,7 +70,7 @@ class Mylist extends HookConsumerWidget {
                                 padding: const EdgeInsets.only(right: 10,),
                                 alignment: AlignmentDirectional.centerEnd,
                                 color: primaryColor,
-                                child: Icon(Icons.delete, color: textColor),
+                                child: const Icon(Icons.delete, color: textColor),
                               ),
                             ),
                           );

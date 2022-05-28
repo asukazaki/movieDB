@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:moviedb/db/MylistMovieDto.dart';
 import 'package:moviedb/db/MylistRepository.dart';
 import 'package:moviedb/list/MovieListViewModel.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../api/LoadingState.dart';
 

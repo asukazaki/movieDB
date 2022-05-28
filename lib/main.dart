@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:moviedb/MovieDBApp.dart';
-import 'package:moviedb/db/AppDatabase.dart';
-import 'package:moviedb/db/MylistMovieProvider.dart';
-import 'package:moviedb/db/MylistRepository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,4 +1,3 @@
-import 'package:moviedb/list/MovieListViewModel.dart';
 
 class MylistMovieDto {
   final int id;

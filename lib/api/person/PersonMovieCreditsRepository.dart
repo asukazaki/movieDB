@@ -1,6 +1,5 @@
 
 import 'package:dio/dio.dart';
-import 'package:moviedb/api/detail/MovieDetailResponse.dart';
 
 import '../ApiResult.dart';
 import '../DioClient.dart';

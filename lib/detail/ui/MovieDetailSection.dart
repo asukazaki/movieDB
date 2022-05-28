@@ -2,7 +2,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:moviedb/MovieDBApp.dart';
 import 'package:moviedb/api/detail/MovieDetailCreditsResponse.dart';
 import 'package:moviedb/api/detail/MovieDetailResponse.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -65,24 +64,24 @@ class MovieDetailSection extends StatelessWidget {
     return Card(
       color: Colors.white.withOpacity(0.8),
       child: Container(
-        padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
         decoration: BoxDecoration(
             border: Border.all(color: const Color.fromRGBO(211, 211, 211, 1)),
             borderRadius: BorderRadius.circular(6),
         ),
         child: Row(
           children: [
-            Container(
+            SizedBox(
                 height: 90,
                 width: 90,
                 child: _chartData(average)),
-            SizedBox(width: 40),
+            const SizedBox(width: 40),
             Column(
               children: [
-                Text("ユーザースコア平均", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                Container(padding: EdgeInsets.fromLTRB(8, 0, 0, 0), child: Text("(${detail.voteCount}人)", style: TextStyle(fontSize: 12))),
-                SizedBox(height: 16),
-                Text(detail.releaseDate != null ? "${detail.releaseDate} 公開" : "-", style: TextStyle(fontSize: 12))
+                const Text("ユーザースコア平均", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                Container(padding: const EdgeInsets.fromLTRB(8, 0, 0, 0), child: Text("(${detail.voteCount}人)", style: const TextStyle(fontSize: 12))),
+                const SizedBox(height: 16),
+                Text(detail.releaseDate != null ? "${detail.releaseDate} 公開" : "-", style: const TextStyle(fontSize: 12))
               ],
             )
           ],
@@ -123,7 +122,7 @@ class MovieDetailSection extends StatelessWidget {
     return Card(
       color: Colors.white.withOpacity(0.8),
       child: Container(
-        padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
         decoration: BoxDecoration(
           border: Border.all(color: const Color.fromRGBO(211, 211, 211, 1)),
           borderRadius: BorderRadius.circular(6),
@@ -170,11 +169,11 @@ class MovieDetailSection extends StatelessWidget {
             children: [
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(8),
-                child: Text("出演者", style: TextStyle(color: Colors.white)),
+                padding: const EdgeInsets.all(8),
+                child: const Text("出演者", style: TextStyle(color: Colors.white)),
                 color: Colors.black45,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               SizedBox(
                 height: 172,
                 child: ListView.separated(
@@ -190,7 +189,7 @@ class MovieDetailSection extends StatelessWidget {
                     );
                   },
                   itemCount: casts.length,
-                  separatorBuilder: (BuildContext context, int index) => SizedBox(width: 10)
+                  separatorBuilder: (BuildContext context, int index) => const SizedBox(width: 10)
                 ),
               )
             ],
@@ -220,7 +219,7 @@ class MovieDetailSection extends StatelessWidget {
         child: Column(
           children: [
             image,
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Expanded(
                 child: Text(
               "${cast.name}",
@@ -235,7 +234,7 @@ class MovieDetailSection extends StatelessWidget {
     return Card(
       color: Colors.white.withOpacity(0.8),
       child: Container(
-        padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
         decoration: BoxDecoration(
           border: Border.all(color: const Color.fromRGBO(211, 211, 211, 1)),
           borderRadius: BorderRadius.circular(6),

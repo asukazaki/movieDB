@@ -4,12 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:moviedb/api/LoadingState.dart';
 import 'package:moviedb/api/discover/DiscoverRepository.dart';
 import 'package:moviedb/api/discover/DiscoverResponse.dart';
-import 'package:moviedb/api/person/PersonMovieCreditsRepository.dart';
-import 'package:moviedb/api/person/PersonMovieCreditsResponse.dart';
-import 'package:moviedb/api/search_movie/SearchMovieRepository.dart';
 
 import '../api/NetworkError.dart';
-import '../api/search_movie/SearchMovieResponse.dart';
 import '../list/MovieListViewModel.dart';
 
 final homeViewModelProvider = ChangeNotifierProvider((ref) => HomeViewModel(DiscoverRepository()));
@@ -39,7 +35,7 @@ class HomeViewModel extends ChangeNotifier {
               response.when(
                   success: (DiscoverResponse vote) {
                     if (popular.results == null || vote.results == null) {
-                      state = LoadingState.error(error: NetworkError.unexpectedError());
+                      state = const LoadingState.error(error: NetworkError.unexpectedError());
                       notifyListeners();
                     }
                     result = HomeCarouselViewInfo(

@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:moviedb/MovieDBApp.dart';
 import 'package:moviedb/home/HomeViewModel.dart';
-import '../api/discover/DiscoverResponse.dart';
 import '../db/MylistMovieProvider.dart';
 import '../detail/MovieDetail.dart';
 import '../detail/MovieDetailViewModel.dart';
@@ -67,7 +66,7 @@ class Home extends HookConsumerWidget {
                     color: backgroundColor,
                     child: Column(
                       children: [
-                        SizedBox(height: 30),
+                        const SizedBox(height: 30),
                         _search(_onTapSearch),
                         _carousel(
                             "知名度の高い順",
@@ -150,7 +149,7 @@ class Home extends HookConsumerWidget {
             children: [
               TextFormField(
                 // decoration: const InputDecoration(labelText: '検索', labelStyle: TextStyle(color: textColor)),
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
                   labelText: '検索',
                   labelStyle: TextStyle(color: textColor),
@@ -198,13 +197,13 @@ class Home extends HookConsumerWidget {
       children: [
         Container(
           width: double.infinity,
-          padding: EdgeInsets.all(8),
-          child: Text(title, style: TextStyle(color: Colors.white)),
+          padding: const EdgeInsets.all(8),
+          child: Text(title, style: const TextStyle(color: Colors.white)),
           color: secondaryColor,
         ),
         // Container(height: 8, color: secondaryColor),
         Padding(
-            padding: EdgeInsets.fromLTRB(12, 12, 12, 12),
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
             child: SizedBox(
               height: 160,
               child: loading ? const Center(child: CircularProgressIndicator())
@@ -219,7 +218,7 @@ class Home extends HookConsumerWidget {
                     );
                   },
                   itemCount: items.length,
-                  separatorBuilder: (BuildContext context, int index) => SizedBox(width: 16)
+                  separatorBuilder: (BuildContext context, int index) => const SizedBox(width: 16)
               ),
             ),
         )
