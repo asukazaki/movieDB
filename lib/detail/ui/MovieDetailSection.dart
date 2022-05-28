@@ -199,6 +199,16 @@ class MovieDetailSection extends StatelessWidget {
   }
 
   Widget _creditItem(Cast cast) {
+    final image = cast.profilePath != null
+        ? CachedNetworkImage(
+            imageUrl: 'https://image.tmdb.org/t/p/original/${cast.profilePath}',
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+            width: 90,
+            height: 120,
+            fit: BoxFit.fitWidth,
+          )
+        : const SizedBox(
+            width: 90, child: Image(image: AssetImage("images/noImage.png")));
     return Container(
         // padding: EdgeInsets.all(6),
         height: 160,
@@ -209,15 +219,14 @@ class MovieDetailSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(6)),
         child: Column(
           children: [
-            CachedNetworkImage(
-              imageUrl: 'https://image.tmdb.org/t/p/original/${cast.profilePath}',
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-              width: 90,
-              height: 120,
-              fit: BoxFit.fitWidth,
-            ),
+            image,
             SizedBox(height: 8),
-            Expanded(child: Text("${cast.name}", maxLines: 3, overflow: TextOverflow.ellipsis,))
+            Expanded(
+                child: Text(
+              "${cast.name}",
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ))
           ],
         ));
   }
