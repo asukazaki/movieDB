@@ -1,8 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:moviedb/MovieDBApp.dart';
 import 'package:moviedb/db/MylistMovieProvider.dart';
 import 'package:moviedb/detail/MovieDetailViewModel.dart';
@@ -18,15 +16,6 @@ class MovieList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(movieListViewModelProvider);
-
-    final _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent * 0.95 &&
-          !viewModel.isReadMore) {
-        viewModel.readMoreMovies();
-      }
-    });
 
     return WillPopScope(
         child: Scaffold(
@@ -45,48 +34,77 @@ class MovieList extends HookConsumerWidget {
               return state.when(
                 data: (MovieListData data) {
                   return data.results.isEmpty
-                      ? Container(color: backgroundColor, child: Center(child: TextX.textX("検索にヒットしませんでした。")),)
+                      ? Container(
+                          color: backgroundColor,
+                          child: Center(child: TextX.textX("検索にヒットしませんでした。")),
+                        )
                       : Container(
-                      color: backgroundColor,
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            child: ListItem(item: data.results[index]),
-                            onTap: () {
-                              final result = data.results[index];
-                              ref
-                                  .read(movieDetailViewModelProvider)
-                                  .initialize(MovieDetailEntry(result.id,
-                                  result.title, result.overview));
-                              ref.read(movieDetailViewModelProvider).fetch();
-                              ref.read(mylistMovieProvider).existsMylist(data.results[index].id);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MovieDetail()),
-                              );
-                            },
-                          );
-                        },
-                        itemCount: data.results.length,
-                        controller: _scrollController,
-                      )
-                  );
+                          color: backgroundColor,
+                          child: NotificationListener<ScrollNotification>(
+                              onNotification: (ScrollNotification scrollInfo) {
+                                if (scrollInfo.metrics.pixels ==
+                                        scrollInfo.metrics.maxScrollExtent &&
+                                    !viewModel.isReadMore) {
+                                  viewModel.readMoreMovies();
+                                }
+                                return false;
+                              },
+                              child: ListView.builder(
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    child: index == data.results.length
+                                        ? const ListTile(
+                                            title: CircularProgressIndicator
+                                                .adaptive(
+                                                    backgroundColor: textColor))
+                                        : ListItem(item: data.results[index]),
+                                    onTap: () {
+                                      final result = data.results[index];
+                                      ref
+                                          .read(movieDetailViewModelProvider)
+                                          .initialize(MovieDetailEntry(
+                                              result.id,
+                                              result.title,
+                                              result.overview));
+                                      ref
+                                          .read(movieDetailViewModelProvider)
+                                          .fetch();
+                                      ref
+                                          .read(mylistMovieProvider)
+                                          .existsMylist(data.results[index].id);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                MovieDetail()),
+                                      );
+                                    },
+                                  );
+                                },
+                                itemCount: data.results.length <=
+                                        (viewModel.totalHits ?? 0)
+                                    ? data.results.length + 1
+                                    : data.results.length,
+                              )));
                 },
                 loading: () {
-                  return Container(color: backgroundColor, child: const Center(child: CircularProgressIndicator()));
+                  return Container(
+                      color: backgroundColor,
+                      child: const Center(
+                          child: CircularProgressIndicator.adaptive()));
                 },
                 error: (NetworkError error) {
-                  return _errorView(error.errorMessage, () { viewModel.fetchMovies(); });
+                  return _errorView(error.errorMessage, () {
+                    viewModel.fetchMovies();
+                  });
                 },
-
               );
             },
           ),
         ),
         onWillPop: () async {
-            viewModel.resetListItem();
-            return true;
+          viewModel.resetListItem();
+          return true;
         });
   }
 

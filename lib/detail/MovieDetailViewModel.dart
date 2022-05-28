@@ -48,6 +48,8 @@ class MovieDetailViewModel extends ChangeNotifier {
     entries.removeAt(currentMovieIndex);
     if (detailInfos.isNotEmpty) {
       currentMovieIndex --;
+      state = LoadingState.data(data: detailInfos[currentMovieIndex]);
+      notifyListeners();
     }
   }
 

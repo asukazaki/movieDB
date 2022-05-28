@@ -139,7 +139,7 @@ class Home extends HookConsumerWidget {
   }
 
   Widget _search(void Function() onTapSearch) {
-    return SizedBox(
+    return Expanded(child: SizedBox(
       height: 160,
       child: Form(
         key: _formKey,
@@ -184,7 +184,7 @@ class Home extends HookConsumerWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _carousel(String title, List<MovieListItem> items, void Function(MovieListItem) onTapItem, bool loading, bool error) {
