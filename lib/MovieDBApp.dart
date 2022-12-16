@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:moviedb/main.dart';
 import 'package:moviedb/mylist/Mylist.dart';
 
 import 'home/Home.dart';
@@ -20,8 +21,35 @@ class MovieDBApp extends StatefulWidget {
 
 class _MovieDBAppState extends State<MovieDBApp> {
 
+  static final _screens = [
+    Home(),
+    Mylist(),
+  ];
+
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home),backgroundColor: secondaryColor, label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite),backgroundColor: secondaryColor, label: 'Like')
+        ],
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: secondaryColor,
+      )
+    );
     return CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
           activeColor: Colors.white,
