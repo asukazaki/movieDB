@@ -38,7 +38,28 @@ class _MovieDBAppState extends State<MovieDBApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: _screens[_selectedIndex],
+      body: Stack(children: [
+        Offstage(
+          offstage: _selectedIndex != 0,
+          child: Navigator(
+            onGenerateRoute: (routeSettings) {
+              return MaterialPageRoute(builder: (context) {
+                return Home();
+              });
+            },
+          ),
+        ),
+        Offstage(
+          offstage: _selectedIndex != 1,
+          child: Navigator(
+            onGenerateRoute: (routeSettings) {
+              return MaterialPageRoute(builder: (context) {
+                return Mylist();
+              });
+            },
+          ),
+        ),
+      ]),
       bottomNavigationBar: Theme(
         data: ThemeData(
           splashColor: Colors.transparent,
