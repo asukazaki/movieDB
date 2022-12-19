@@ -39,15 +39,23 @@ class _MovieDBAppState extends State<MovieDBApp> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home),backgroundColor: secondaryColor, label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite),backgroundColor: secondaryColor, label: 'Like')
-        ],
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: secondaryColor,
+      bottomNavigationBar: Theme(
+        data: ThemeData(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.home),backgroundColor: secondaryColor, label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.favorite),backgroundColor: secondaryColor, label: 'Like')
+          ],
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: secondaryColor,
+          unselectedItemColor: Colors.white,
+          selectedItemColor: primaryColor,
+        ),
       )
     );
     return CupertinoTabScaffold(
