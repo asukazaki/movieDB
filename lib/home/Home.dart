@@ -51,6 +51,7 @@ class Home extends HookConsumerWidget {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: TextX.textX("home")
       ),

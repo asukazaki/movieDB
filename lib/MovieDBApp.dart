@@ -23,6 +23,7 @@ class _MovieDBAppState extends State<MovieDBApp> {
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
+        resizeToAvoidBottomInset: false,
         tabBar: CupertinoTabBar(
           activeColor: Colors.white,
           inactiveColor: backgroundColor,
@@ -37,12 +38,14 @@ class _MovieDBAppState extends State<MovieDBApp> {
             case 0:
               return CupertinoTabView(builder: (context) {
                 return CupertinoPageScaffold(
+                    resizeToAvoidBottomInset: false,
                     child: Home()
                 );
               });
             case 1:
               return CupertinoTabView(builder: (context) {
                 return CupertinoPageScaffold(
+                    resizeToAvoidBottomInset: false,
                     child: Mylist()
                 );
               });
