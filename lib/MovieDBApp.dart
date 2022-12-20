@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:moviedb/main.dart';
@@ -28,6 +30,11 @@ class _MovieDBAppState extends State<MovieDBApp> {
 
   int _selectedIndex = 0;
 
+  final keys = [
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+  ];
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -36,77 +43,58 @@ class _MovieDBAppState extends State<MovieDBApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(children: [
-        Offstage(
-          offstage: _selectedIndex != 0,
-          child: Navigator(
-            onGenerateRoute: (routeSettings) {
-              return MaterialPageRoute(builder: (context) {
-                return Home();
-              });
-            },
-          ),
+    return WillPopScope(
+        onWillPop: () async {
+          final willPop = await Navigator.maybePop(keys[_selectedIndex].currentState!.context);
+          developer.log('On Will maybePop $willPop');
+          return !willPop;
+        },
+        child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: Stack(children: [
+              Offstage(
+                offstage: _selectedIndex != 0,
+                child: Navigator(
+                  key: keys[0],
+                  onGenerateRoute: (routeSettings) {
+                    return MaterialPageRoute(builder: (context) {
+                      return Home();
+                    });
+                  },
+                ),
+              ),
+              Offstage(
+                offstage: _selectedIndex != 1,
+                child: Navigator(
+                  key: keys[1],
+                  onGenerateRoute: (routeSettings) {
+                    return MaterialPageRoute(builder: (context) {
+                      return Mylist();
+                    });
+                  },
+                ),
+              ),
+            ]),
+            bottomNavigationBar: Theme(
+              data: ThemeData(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+              ),
+              child: BottomNavigationBar(
+                currentIndex: _selectedIndex,
+                onTap: _onItemTapped,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(icon: Icon(Icons.home),backgroundColor: secondaryColor, label: 'Home'),
+                  BottomNavigationBarItem(icon: Icon(Icons.favorite),backgroundColor: secondaryColor, label: 'Like')
+                ],
+                type: BottomNavigationBarType.fixed,
+                backgroundColor: secondaryColor,
+                unselectedItemColor: Colors.white,
+                selectedItemColor: primaryColor,
+              ),
+            )
         ),
-        Offstage(
-          offstage: _selectedIndex != 1,
-          child: Navigator(
-            onGenerateRoute: (routeSettings) {
-              return MaterialPageRoute(builder: (context) {
-                return Mylist();
-              });
-            },
-          ),
-        ),
-      ]),
-      bottomNavigationBar: Theme(
-        data: ThemeData(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.home),backgroundColor: secondaryColor, label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.favorite),backgroundColor: secondaryColor, label: 'Like')
-          ],
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: secondaryColor,
-          unselectedItemColor: Colors.white,
-          selectedItemColor: primaryColor,
-        ),
-      )
     );
-    return CupertinoTabScaffold(
-        tabBar: CupertinoTabBar(
-          activeColor: Colors.white,
-          inactiveColor: backgroundColor,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.home),backgroundColor: secondaryColor, label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.favorite),backgroundColor: secondaryColor, label: 'Like')
-          ],
-          backgroundColor: secondaryColor,
-        ),
-        tabBuilder: (context, index) {
-          switch (index) {
-            case 0:
-              return CupertinoTabView(builder: (context) {
-                return CupertinoPageScaffold(
-                    child: Home()
-                );
-              });
-            case 1:
-              return CupertinoTabView(builder: (context) {
-                return CupertinoPageScaffold(
-                    child: Mylist()
-                );
-              });
-            default:
-              return const PageWidget(color:Colors.blue, title:'Album');
-          }
-        });
   }
 }
 
