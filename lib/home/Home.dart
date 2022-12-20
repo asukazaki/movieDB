@@ -25,8 +25,9 @@ class Home extends HookConsumerWidget {
         // バリデーションチェック後
         _formKey.currentState!.save();
 
-        ref.watch(movieListViewModelProvider).setSearchWord(_message);
+        ref.watch(movieListViewModelProvider).setSearchWord(_message.trim());
         ref.read(movieListViewModelProvider).fetchMovies(shouldReset: true);
+        FocusScope.of(context).unfocus();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => MovieList()),
@@ -68,7 +69,11 @@ class Home extends HookConsumerWidget {
                     child: Column(
                       children: [
                         const SizedBox(height: 30),
-                        _search(_onTapSearch),
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => FocusScope.of(context).unfocus(),
+                          child: _search(_onTapSearch),
+                        ),
                         _carousel(
                             "知名度の高い順",
                             info.popularItems,
