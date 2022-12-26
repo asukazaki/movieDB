@@ -144,8 +144,8 @@ class Home extends HookConsumerWidget {
   }
 
   Widget _search(void Function() onTapSearch) {
-    return Expanded(child: SizedBox(
-      height: 160,
+    return SizedBox(
+      height: 180,
       child: Form(
         key: _formKey,
         child: Container(
@@ -153,7 +153,7 @@ class Home extends HookConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextFormField(
+              Expanded(child: TextFormField(
                 // decoration: const InputDecoration(labelText: '検索', labelStyle: TextStyle(color: textColor)),
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
@@ -175,7 +175,7 @@ class Home extends HookConsumerWidget {
                 onSaved: (value) {
                   _message = value!;
                 },
-              ),
+              ),),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -189,7 +189,7 @@ class Home extends HookConsumerWidget {
           ),
         ),
       ),
-    ));
+    );
   }
 
   Widget _carousel(String title, List<MovieListItem> items, void Function(MovieListItem) onTapItem, bool loading, bool error) {
