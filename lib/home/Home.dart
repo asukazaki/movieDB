@@ -145,7 +145,7 @@ class Home extends HookConsumerWidget {
 
   Widget _search(void Function() onTapSearch) {
     return SizedBox(
-      height: 180,
+      height: 170,
       child: Form(
         key: _formKey,
         child: Container(
