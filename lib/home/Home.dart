@@ -25,8 +25,9 @@ class Home extends HookConsumerWidget {
         // バリデーションチェック後
         _formKey.currentState!.save();
 
-        ref.watch(movieListViewModelProvider).setSearchWord(_message);
+        ref.watch(movieListViewModelProvider).setSearchWord(_message.trim());
         ref.read(movieListViewModelProvider).fetchMovies(shouldReset: true);
+        FocusScope.of(context).unfocus();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => MovieList()),
@@ -51,6 +52,7 @@ class Home extends HookConsumerWidget {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: TextX.textX("home")
       ),
@@ -67,7 +69,11 @@ class Home extends HookConsumerWidget {
                     child: Column(
                       children: [
                         const SizedBox(height: 30),
-                        _search(_onTapSearch),
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => FocusScope.of(context).unfocus(),
+                          child: _search(_onTapSearch),
+                        ),
                         _carousel(
                             "知名度の高い順",
                             info.popularItems,
@@ -138,8 +144,8 @@ class Home extends HookConsumerWidget {
   }
 
   Widget _search(void Function() onTapSearch) {
-    return Expanded(child: SizedBox(
-      height: 160,
+    return SizedBox(
+      height: 170,
       child: Form(
         key: _formKey,
         child: Container(
@@ -147,7 +153,7 @@ class Home extends HookConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextFormField(
+              Expanded(child: TextFormField(
                 // decoration: const InputDecoration(labelText: '検索', labelStyle: TextStyle(color: textColor)),
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
@@ -169,7 +175,7 @@ class Home extends HookConsumerWidget {
                 onSaved: (value) {
                   _message = value!;
                 },
-              ),
+              ),),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -183,7 +189,7 @@ class Home extends HookConsumerWidget {
           ),
         ),
       ),
-    ));
+    );
   }
 
   Widget _carousel(String title, List<MovieListItem> items, void Function(MovieListItem) onTapItem, bool loading, bool error) {

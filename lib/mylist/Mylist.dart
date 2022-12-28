@@ -15,8 +15,19 @@ class Mylist extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final viewModel = ref.watch(movieListViewModelProvider);
     final mylistProvider = ref.watch(mylistMovieProvider);
+
+    _onTapItem(MovieListItem data) {
+      ref.read(movieDetailViewModelProvider).initialize(
+          MovieDetailEntry(data.id, data.title, data.overview));
+      ref.read(movieDetailViewModelProvider).fetch();
+      ref.read(mylistMovieProvider).existsMylist(data.id);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MovieDetail()),
+      );
+    }
 
     return Scaffold(
       appBar: PreferredSize(
@@ -47,19 +58,7 @@ class Mylist extends HookConsumerWidget {
                             child: Dismissible(
                               child: GestureDetector(
                                 child: ListItem(item: data[index]),
-                                onTap: () {
-                                  final result = data[index];
-                                  ref.read(movieDetailViewModelProvider).initialize(
-                                      MovieDetailEntry(result.id, result.title,
-                                          result.overview));
-                                  ref.read(movieDetailViewModelProvider).fetch();
-                                  ref.read(mylistMovieProvider).existsMylist(result.id);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MovieDetail()),
-                                  );
-                                },
+                                onTap: () { _onTapItem(data[index]); },
                               ),
                               onDismissed: (DismissDirection direction) {
                                 mylistProvider.deleteMylist(data[index].id);

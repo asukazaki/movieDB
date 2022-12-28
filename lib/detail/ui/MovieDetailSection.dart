@@ -175,7 +175,7 @@ class MovieDetailSection extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               SizedBox(
-                height: 172,
+                height: 182,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index){
@@ -210,7 +210,7 @@ class MovieDetailSection extends StatelessWidget {
             width: 90, child: Image(image: AssetImage("images/noImage.png")));
     return Container(
         // padding: EdgeInsets.all(6),
-        height: 160,
+        height: 170,
         width: 90,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         decoration: BoxDecoration(
